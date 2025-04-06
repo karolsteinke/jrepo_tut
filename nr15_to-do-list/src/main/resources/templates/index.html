@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns="http://www.thymeleaf.org">
+    <head>
+        <title>To-Do App</title>
+    </head>
+    <body>
+        <h1>🔥 To-Do list 🔥</h1>
+
+        <form th:action="@{/add}" method="post" th:object="${todo}">
+            <input type="text" th:field="*{description}" placeholder="Enter task..."/>
+            <button type="submit">Add</button>
+            <div th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
+        </form>
+
+        <ul>
+            <li th:each="task : ${todos}">
+                <form th:action="@{/complete/{id}(id=${task.id})}" method="post" style="display:inline">
+                    <button type="submit" th:text="${task.completed ? '✔️' : '⬜'}"></button>
+                </form>
+
+                <span th:style="${task.completed} ? 'text-decoration: line-through;' : ''"
+                    th:text="${task.description}"></span>
+
+                <form th:action="@{/delete/{id}(id=${task.id})}" method="post" style="display:inline">
+                    <button type="submit">🗑️</button>
+                </form>
+            </li>
+        </ul>
+    </body>
+</html>
