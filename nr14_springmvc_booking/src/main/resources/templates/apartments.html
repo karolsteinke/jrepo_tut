@@ -6,12 +6,15 @@
     </head>
     <body>
         <form th:object="${apartment}" method="post">
+            <!--*{name} means ${apartment.name} but is shorter-->
             <label for="name">Name: </label>
             <input id="name" type="text" required th:field="*{name}"/>
             <label for="capacity">Capacity: </label>
             <input id="capacity" type="number" th:field="*{capacity}"/>
             <input type="submit" value="Add"/>
-            <p th:if="${#fields.hasErrors('capacity')}" th:errors="*{capacity}">Capacity Error</p>
+            
+            <!--if 'capacity' field has errors, show message from @Min adnotation in 'capacity' field-->
+            <p th:if="${#fields.hasErrors('capacity')}" th:errors="*{capacity}">error_default_text</p>
         </form>
 
         <table border="1">

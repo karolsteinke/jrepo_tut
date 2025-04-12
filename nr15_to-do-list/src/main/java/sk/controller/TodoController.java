@@ -19,9 +19,9 @@ public class TodoController {
     @Autowired
     private TodoRepository todoRepository;
 
-    //def.: return index page and add to model:
+    //def.: return index page & add following to model :
     //"todo" = new Todo entity (only to use in html form);
-    //"todos" = list of all entities
+    //"todos" = list of all entities from the db
     @GetMapping("/")
     public String index(Model model) {
         model.addAttribute("todo", new Todo());
@@ -29,7 +29,7 @@ public class TodoController {
         return "index";
     }
 
-    //def.: if no errors, save "todo" from HTML form is the db
+    //def.: if no errors, save "todo" from HTML form to the db
     //@ModelAttribute("todo") is *optional*; it *bonds* "todo" data from HTML form with "todo" object
     //"Todo todo" does NOT use "todo" object created in GET, but uses *new* object
     //"BindingResult" extends "Errors"
@@ -45,9 +45,9 @@ public class TodoController {
         }
     }
 
-    //def.: finds todo by id, sets as "complete", saves back in the db
-    //@Pathvariable marks path variable, e.g. "/complete/42"
-    //".orElseThrow()" throws exception when no results
+    //def.: finds todo by id, sets as "complete", saves back to the db
+    //@Pathvariable means path variable, e.g. "/complete/42" (alt. to req. parameter)
+    //".orElseThrow()" throws exception if no results
     //TODO: how to handle exception here?
     @PostMapping("/complete/{id}")
     public String completeTodo(@PathVariable Long id) {

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns="http://www.thymeleaf.org">
+    <head>
+        <title>Transactions List</title>
+    </head>
+    <body>
+        <h1>Transactions List</h1>
+
+        <!--table presenting all 'transactions' from the model-->
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Amount</th>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Category</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="tx: ${transactions}">
+                    <td th:text="${tx.amount}">amount_placeholder</td>
+                    <td th:text="${tx.date}">date_placeholder</td>
+                    <td th:text="${tx.type}">type_placeholder</td>
+                    <td th:text="${tx.category.name}">category_placeholder</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </body>
+</html>

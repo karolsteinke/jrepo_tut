@@ -6,12 +6,16 @@
     <body>
         <h1>🔥 To-Do list 🔥</h1>
 
+        <!--html form asking for user input to collect new 'todo' data-->
+        <!--using model object 'todo' created in GET method-->
         <form th:action="@{/add}" method="post" th:object="${todo}">
             <input type="text" th:field="*{description}" placeholder="Enter task..."/>
             <button type="submit">Add</button>
             <div th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
         </form>
 
+        <!--list presenting all 'todos' from the model-->
+        <!--showing completed tasks as crossed out-->
         <ul>
             <li th:each="task : ${todos}">
                 <form th:action="@{/complete/{id}(id=${task.id})}" method="post" style="display:inline">

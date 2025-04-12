@@ -23,18 +23,18 @@ public class ApartmentController {
         this.repo = repo;
     }
     
-    //Create new 'Apartement' instance to allow new apartment through HTML form
+    //Create new 'Apartement' instance to use in HTML form
     //Add all apartments from the repo to the model
     @GetMapping()
     public String getAll(Model model) {
+        //attribute doesn't need an explicit name like this: ("apartment", new Apartment());
         model.addAttribute(new Apartment());
         model.addAttribute("apartments", repo.findAll());
         return "apartments";
     }
 
     //Save the provided instance of the Apartment class in the database through the repository
-    //'Apartment' instance is first created in the GET method and added to the model
-    //'Apartment' instance is modified here through HTML form
+    //'Apartment' instance is modified here with data from HTML form
     //'Apartment' instance is saved to the database in the end
     //@Valid & 'errors' = required for Bean Validation to work (inside Apartment class)
     @PostMapping()
@@ -42,7 +42,7 @@ public class ApartmentController {
         //if errors, show client the same view as with GET method
         //when no errors = apartment entity is valid, save to the db
         if (errors.hasErrors()) {
-            model.addAttribute("apartments", repo.findAll());
+            model.addAttribute("apartments", repo.findAll()); //TODO: is this call nessesary? is this not already in model?
             return "apartments";
         }
         else {

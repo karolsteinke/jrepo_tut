@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns="http://www.thymeleaf.org">
+    <head>
+        <title>Add new transaction</title>
+    </head>
+    <body>
+        <h1>Add new transaction</h1>
+
+        <!--html form asking for user input for new transaction-->
+        <!--using model object 'transactionDto' created in GET method-->
+        <form th:action="@{/transactions/add}" method="post" th:object="${transactionDto}">
+            <input type="number" th:field="*{amount}"/>
+            <input type="date" th:field="*{date}"/>
+            <select th:field="*{type}">
+                <option value="INCOME">Income</option>
+                <option value="EXPENSE">Expense</option>
+            </select>
+            <select th:field="*{categoryId}">
+                <option value="RENT OR MORTAGE">Rent or Mortage</option>
+                <option value="GROCERIES">Groceries</option>
+                <option value="ENTERTAINMENT">Entertainment</option>
+                <option value="PERSONAL CARE">Personal Care</option>
+                <option value="SALARY">Salary</option>
+                <option value="FREELANCE CONTRACT">Freelance Contract</option>
+            </select>
+            <input type="text" th:field="*{description}"/>
+            <button type="submit">Add</button>
+        </form>
+
+    </body>
+</html>

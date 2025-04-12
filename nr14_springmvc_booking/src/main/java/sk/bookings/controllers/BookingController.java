@@ -27,7 +27,7 @@ public class BookingController {
         this.apartmentRepo = apartmentRepo;
     }
 
-    //Create new 'Booking' instance to allow new bookig through HTML form
+    //Create new 'Booking' instance to use in HTML form
     //Add all bookings from the repo to the model
     @GetMapping
     public String getAll(Model model) {
@@ -36,7 +36,7 @@ public class BookingController {
         return "bookings";
     }
 
-    //Save the provided instance of the Apartment class in the database through the repository
+    //Save *new* Apartment in the database through the repository
     //@Valid & 'errors' = required for Bean Validation to work (inside Apartment class)
     @PostMapping
     public String create(@Valid Booking booking, Errors errors, Model model) {
@@ -53,7 +53,7 @@ public class BookingController {
             LocalDate enDate = booking.getToDate();
             List<Apartment> availableApartments = apartmentRepo.getFreeApartments(numGuests, startDay, enDate);
 
-            //if any search results, save booking in the db
+            //if any search results are there, save booking to the db
             //otherwise, set proper flag in the model & show standard 'GET' view
             if(availableApartments.size() > 0) {
                 booking.setApartment(availableApartments.get(0));
