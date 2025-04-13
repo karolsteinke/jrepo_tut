@@ -1,6 +1,8 @@
 package sk.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -13,6 +15,16 @@ public class Category {
 
     private String name;
 
+    //@Enumerated(EnumType.STRING) = save enum in the db *as string* (otherwise uses default = ordinal)
+    @Enumerated(EnumType.STRING)
+    private TransactionType type; //INCOME or EXPENSE
+
+    //constructor
+    public Category(String name, TransactionType type) {
+        this.name = name;
+        this.type = type;
+    }
+    
     //getters & setters
     
     public Long getId() {
@@ -29,6 +41,14 @@ public class Category {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public TransactionType getType() {
+        return type;
+    }
+
+    public void setType(TransactionType type) {
+        this.type = type;
     }
 
     

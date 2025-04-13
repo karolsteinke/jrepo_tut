@@ -8,7 +8,7 @@ import sk.model.TransactionType;
 public class TransactionDto {
     private BigDecimal amount;
     private LocalDate date;
-    private TransactionType type;
+    private TransactionType type; //INCOME or EXPENSE
     private Long categoryId;
     private String description;
     

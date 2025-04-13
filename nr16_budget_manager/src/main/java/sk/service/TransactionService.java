@@ -15,7 +15,7 @@ public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final CategoryRepository categoryRepository;
 
-    //def.: constructor; DI for interface fields with
+    //def.: constructor; DI for *interface-type* fields
     public TransactionService (TransactionRepository transactionRepository, CategoryRepository categoryRepository) {
         this.transactionRepository = transactionRepository;
         this.categoryRepository = categoryRepository;
