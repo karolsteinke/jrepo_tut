@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
+//@Entity = object will be mapped to the db table
 @Entity
 public class Category {
     @Id
@@ -20,6 +21,8 @@ public class Category {
     private TransactionType type; //INCOME or EXPENSE
 
     //constructor
+    public Category() {}
+    
     public Category(String name, TransactionType type) {
         this.name = name;
         this.type = type;

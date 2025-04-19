@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 
+//@Entity = object will be mapped to the db table
 @Entity
 public class Transaction {
     @Id

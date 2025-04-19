@@ -5,28 +5,40 @@
     </head>
     <body>
         <h1>Add new transaction</h1>
-
-        <!--html form asking for user input for new transaction-->
-        <!--using model object 'transactionDto' created in GET method-->
-        <form th:action="@{/transactions/add}" method="post" th:object="${transactionDto}">
-            <input type="number" th:field="*{amount}"/>
-            <input type="date" th:field="*{date}"/>
-            <select th:field="*{type}">
-                <option value="INCOME">Income</option>
-                <option value="EXPENSE">Expense</option>
-            </select>
+        
+        <!--html forms asking for user input for new transaction-->
+        <!--using dtos created in the GET method-->
+        
+        <h2>Add income</h2>
+        <form th:action="@{/transactions/save}" method="post" th:object="${incomeDto}">
+            <!--'type' is already set by constructor, client won't see hidden field-->
+            <input type="hidden" th:field="*{type}" />
             <select th:field="*{categoryId}">
-                <!--TODO: categoryId is of 'Long' type...-->
-                <option value="RENT OR MORTAGE">Rent or Mortage</option>
-                <option value="GROCERIES">Groceries</option>
-                <option value="ENTERTAINMENT">Entertainment</option>
-                <option value="PERSONAL CARE">Personal Care</option>
-                <option value="SALARY">Salary</option>
-                <option value="FREELANCE CONTRACT">Freelance Contract</option>
+                <option th:each="cat : ${incomeCategories}" th:value="${cat.id}" th:text="${cat.name}"></option>
             </select>
-            <input type="text" th:field="*{description}"/>
-            <button type="submit">Add</button>
+            <input type="number" step="0.01" th:field="*{amount}" placeholder="0.00" required/>
+            <input type="text" th:field="*{description}" placeholder="Optional description"/>
+            <input type="date" th:field="*{date}"required/>
+            <button type="submit">Add income</button>
+            <div th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}" class="error"></div>
+            <div th:if="${#fields.hasErrors('date')}" th:errors="*{date}" class="error"></div>
         </form>
 
+        <h2>Add expense</h2>
+        <form th:action="@{/transactions/save}" method="post" th:object="${expenseDto}">
+            <!--'type' is already set by constructor, client won't see hidden field-->
+            <input type="hidden" th:field="*{type}" />
+            <select th:field="*{categoryId}">
+                <option th:each="cat : ${expenseCategories}" th:value="${cat.id}" th:text="${cat.name}"></option>
+            </select>
+            <input type="number" step="0.01" th:field="*{amount}" placeholder="0.00" required/>
+            <input type="text" th:field="*{description}" placeholder="Optional description"/>
+            <input type="date" th:field="*{date}"required/>
+            <button type="submit">Add expense</button>
+            <div th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}" class="error"></div>
+            <div th:if="${#fields.hasErrors('date')}" th:errors="*{date}" class="error"></div>
+        </form>
+
+        <p><a th:href="@{/transactions}">← Back to list</a></p>
     </body>
 </html>

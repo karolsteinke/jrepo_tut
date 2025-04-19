@@ -17,7 +17,7 @@ public class DataInitializer {
         this.categoryRepository = categoryRepository;
     }
 
-    //def.: add hard-coded categories to the db
+    //def.: add categories (hard-coded here) to the db
     //@PostConstruct = method will auto-run just after bean creation and DI
     @PostConstruct
     public void init() {
