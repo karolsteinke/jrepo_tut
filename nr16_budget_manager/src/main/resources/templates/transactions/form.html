@@ -7,12 +7,12 @@
         <h1>Add new transaction</h1>
         
         <!--html forms asking for user input for new transaction-->
-        <!--using dtos created in the GET method-->
+        <!--using dto created in the GET method-->
+        <!--field 'type' is hard-coded here, hidden from the user-->
         
         <h2>Add income</h2>
-        <form th:action="@{/transactions/save}" method="post" th:object="${incomeDto}">
-            <!--'type' is already set by constructor, client won't see hidden field-->
-            <input type="hidden" th:field="*{type}" />
+        <form th:action="@{/transactions/save}" method="post" th:object="${transactionDto}">
+            <input type="hidden" name="type" value="INCOME" />
             <select th:field="*{categoryId}">
                 <option th:each="cat : ${incomeCategories}" th:value="${cat.id}" th:text="${cat.name}"></option>
             </select>
@@ -25,9 +25,8 @@
         </form>
 
         <h2>Add expense</h2>
-        <form th:action="@{/transactions/save}" method="post" th:object="${expenseDto}">
-            <!--'type' is already set by constructor, client won't see hidden field-->
-            <input type="hidden" th:field="*{type}" />
+        <form th:action="@{/transactions/save}" method="post" th:object="${transactionDto}">
+            <input type="hidden" name="type" value="EXPENSE" />
             <select th:field="*{categoryId}">
                 <option th:each="cat : ${expenseCategories}" th:value="${cat.id}" th:text="${cat.name}"></option>
             </select>

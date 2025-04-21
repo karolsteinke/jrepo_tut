@@ -15,7 +15,7 @@ public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final CategoryRepository categoryRepository;
 
-    //def.: constructor; DI for *interface-type* fields
+    //def.: DI for *interface-type* fields
     public TransactionService (TransactionRepository transactionRepository, CategoryRepository categoryRepository) {
         this.transactionRepository = transactionRepository;
         this.categoryRepository = categoryRepository;
@@ -38,11 +38,11 @@ public class TransactionService {
     }
 
     public void findByMonthYear(int month, int year) {
-
+        //work in progress...
     }
 
     public void delete(Long id) {
-
+        //work in progress...
     }
     
 }

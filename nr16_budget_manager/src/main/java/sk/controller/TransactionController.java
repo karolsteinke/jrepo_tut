@@ -26,36 +26,41 @@ public class TransactionController {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    //def.: add all transactions to the model, return view for this data ("list")
-    @GetMapping("/transactions")
+    //def.: add all transactions to the model
+    //def.: return 'list' view (showing all transactions)
+    @GetMapping("/transactions") //ENDPOINT
     public String listTransactions(Model model) {
         List<Transaction> transactions = transactionService.getAll();
         model.addAttribute("transactions", transactions);
         return "transactions/list";
     }
 
-    //def.: add dtos to the model, to use in HTML forms; return view with forms
-    //def.: add categories to the model (matching 'type')
-    @GetMapping("/transactions/form")
+    //def.: add dto & categories to the model, to use in HTML form;
+    //def.: return 'form' view (for user input)
+    @GetMapping("/transactions/form") //ENDPOINT
     public String showForm(Model model)  {
-        model.addAttribute("incomeDto", new TransactionDto(TransactionType.INCOME));
-        model.addAttribute("expenseDto", new TransactionDto(TransactionType.EXPENSE));
-        model.addAttribute("incomeCategories", categoryRepository.findByType(TransactionType.INCOME));
-        model.addAttribute("expenseCategories", categoryRepository.findByType(TransactionType.EXPENSE));
-        
+        model.addAttribute("transactionDto", new TransactionDto());
+        addCategoriesToModel(model);       
         return "transactions/form";
     }
 
-    //def.: call service to save dto (user input from HTML form)
-    //tip: after POST use "redirect" to force new *GET* request (otherwise browser would use last request = POST)
-    @PostMapping("/transactions/save")
-    public String saveTransaction(@ModelAttribute @Valid TransactionDto dto, BindingResult result, Model model) {
-        
+    //def.: call service to save received DTO (user input from HTML form)
+    //def.: redirect to 'form' view
+    @PostMapping("/transactions/save") //ENDPOINT
+    public String saveTransaction(@ModelAttribute @Valid TransactionDto TransactionDto, BindingResult result, Model model) {
+       
+        //if errors -> build model (analog to GET) and return 'form' view
         if (result.hasErrors()) {
-            //
+            addCategoriesToModel(model); //spring *auto-adds* received 'transactionDto' to the model (with its errors) but categories have to be added explicitly
+            return "transactions/form";
         }
-        
-        transactionService.saveTransaction(dto);
-        return "redirect:/transactions/form";
+        transactionService.saveTransaction(TransactionDto);
+        return "redirect:/transactions/form"; //tip: after POST use "redirect" to force new *GET* request (otherwise browser would use last request = POST)
+    }
+
+    //def.: add categories to the model (helper class)
+    private void addCategoriesToModel(Model model) {
+        model.addAttribute("incomeCategories", categoryRepository.findByType(TransactionType.INCOME));
+        model.addAttribute("expenseCategories", categoryRepository.findByType(TransactionType.EXPENSE));
     }
 }

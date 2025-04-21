@@ -8,8 +8,18 @@ public class ReportDto {
     private int year;
     private BigDecimal totalIncome;
     private BigDecimal totalExpense;
-    private BigDecimal balance;
+    private BigDecimal balance; //income-expense difference
     private Map<String, BigDecimal> expensesByCategory;
+    
+    //constructors
+    public ReportDto(int month, int year, BigDecimal income, BigDecimal expense, BigDecimal balance, Map<String, BigDecimal> expensesByCategory) {
+        this.month = month;
+        this.year = year;
+        this.totalIncome = income;
+        this.totalExpense = expense;
+        this.balance = balance;
+        this.expensesByCategory = expensesByCategory;
+    }
     
     //getters & setters
     

@@ -11,14 +11,14 @@ public class TransactionDto {
     
     @NotNull(message = "Amount is required")
     @Positive(message = "Amount must be positive")
-    private BigDecimal amount;
+    private BigDecimal amount; //required
     
     @NotNull(message = "Date is required")
-    private LocalDate date;
+    private LocalDate date; //required
     
-    private TransactionType type; //INCOME or EXPENSE
-    private Long categoryId;
-    private String description; //optional input
+    private TransactionType type; //INCOME or EXPENSE, always present
+    private Long categoryId; //always present
+    private String description; //optional
 
     //constructors
     
