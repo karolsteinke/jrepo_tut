@@ -1,5 +1,7 @@
 package sk.controller;
 
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,16 +20,22 @@ public class ReportController {
     @Autowired
     private ReportService reportService;
 
-    @GetMapping("/monthly")
     //e.g.: http://localhost:8080/reports/monthly?month=4&year=2025
+    @GetMapping("/monthly")
     public String showMonthlyReport(@RequestParam int month, @RequestParam int year, Model model) {
         ReportDto report = reportService.generateMonthlyReport(month, year);
         model.addAttribute("report", report);
         return "reports/monthly";
     }
 
-    @GetMapping("monthly/pdf")
-    public void exportMonthlyReportToPdf(@RequestParam int month, @RequestParam int year, HttpServletResponse respone) throws Exception {
-        //work in progress...
+    //def.:
+    @GetMapping("/monthly/csv")
+    public void exportMonthlyReportToCsv(@RequestParam int month, @RequestParam int year, HttpServletResponse response) throws IOException { 
+        ReportDto report = reportService.generateMonthlyReport(month, year);
+
+        response.setContentType("text/csv");
+        response.setHeader("Content-Disposition", "attachment; filename=report.csv");
+
+        reportService.writeCsvReport(report, response.getWriter());
     }
 }

@@ -1,5 +1,6 @@
 package sk.service;
 
+import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -60,5 +61,21 @@ public class ReportService {
 
     public void calculateBalance(int month, int year) {
         //work in progress
+    }
+
+    //def.:
+    public void writeCsvReport(ReportDto report, PrintWriter writer) {
+        writer.println("Report for," +  report.getMonth() + "/" + report.getYear());
+        writer.println();
+        writer.println("Total Income," + report.getTotalIncome());
+        writer.println("Total Expense," + report.getTotalExpense());
+        writer.println("Balance," + report.getBalance());
+        writer.println();
+        writer.println("Expenses by Category:");
+        writer.println("Category,Amount");
+
+        report.getExpensesByCategory().forEach((category,amount) -> {
+            writer.println(category + "," + amount);
+        });
     }
 }

@@ -17,5 +17,7 @@
                 <td th:text="${entry.value}"></td>
             </tr>
         </table>
+
+        <p><a th:href="@{/reports/monthly/csv(month=${report.month}, year=${report.year})}">Export to CSV</a></p>
     </body>
 </html>
