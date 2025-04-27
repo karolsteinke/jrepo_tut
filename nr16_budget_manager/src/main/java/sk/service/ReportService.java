@@ -24,46 +24,33 @@ public class ReportService {
         this.transactionRepository = transactionRepository;
     }
 
-    //def.: create new ReportDto for selected time (use transactionRepository for data)
+    //def.: create new ReportDto for given time (use transactionRepository for transactions list)
     public ReportDto generateMonthlyReport(int month, int year) {
         LocalDate start = LocalDate.of(year, month, 1);
         LocalDate end = start.withDayOfMonth(start.lengthOfMonth());
-
-        List<Transaction> transactions = transactionRepository.findByDateBetween(start, end); //all transactions matching selected time period
-
-        BigDecimal income = transactions.stream()
-            .filter(tx -> tx.getType() == TransactionType.INCOME) //filter income transactions
-            .map(Transaction::getAmount) //convert transaction (object) --> amount (BigDecimal)
-            .reduce(BigDecimal.ZERO, BigDecimal::add); //sum all
-
-        BigDecimal expense = transactions.stream()
-            .filter(tx -> tx.getType() == TransactionType.EXPENSE) //filter expense transactions
-            .map(Transaction::getAmount) //convert transaction (object) --> amount (BigDecimal)
-            .reduce(BigDecimal.ZERO, BigDecimal::add); //sum all
-
-        Map<String, BigDecimal> expensesByCategory = transactions.stream()
-            .filter(tx -> tx.getType() == TransactionType.EXPENSE) //filter expense transactions
-            .collect(Collectors.groupingBy( //collect data to Map<String, BigDecimal> structure
-                tx -> tx.getCategory().getName(), //key = category name (=String)
-                Collectors.reducing(BigDecimal.ZERO, Transaction::getAmount, BigDecimal::add) //value = sum all, which match category (=BigDecimal)
-            ));
+        
+        List<Transaction> transactions = transactionRepository.findByDateBetween(start, end); //all transactions matching given time period
+        BigDecimal income = getIncome(transactions);
+        BigDecimal expense = getExpense(transactions);
+        Map<String, BigDecimal> expensesByCategory = getExpensesByCategory(transactions);
         
         return new ReportDto(month, year, income, expense, income.subtract(expense), expensesByCategory);
     }
 
-    public void generateYearlyReport(int year) {
-        //work in progress
+    //def.: create new ReportDto for given time (use transactionRepository for transactions list)
+    public ReportDto generateYearlyReport(int year) {
+        LocalDate start = LocalDate.of(year, 1, 1);
+        LocalDate end = LocalDate.of(year, 12, 31);
+
+        List<Transaction> transactions = transactionRepository.findByDateBetween(start, end); //all transactions matching given time period
+        BigDecimal income = getIncome(transactions);
+        BigDecimal expense = getExpense(transactions);
+        Map<String, BigDecimal> expensesByCategory = getExpensesByCategory(transactions);
+        
+        return new ReportDto(1, year, income, expense, income.subtract(expense), expensesByCategory);
     }
 
-    public void getSummaryPerCategory(int month, int year) {
-        //work in progress
-    }
-
-    public void calculateBalance(int month, int year) {
-        //work in progress
-    }
-
-    //def.:
+    //def.: save report data to provided PrintWriter, which is part of HTTP response (=CSV attachment)
     public void writeCsvReport(ReportDto report, PrintWriter writer) {
         writer.println("Report for," +  report.getMonth() + "/" + report.getYear());
         writer.println();
@@ -77,5 +64,31 @@ public class ReportService {
         report.getExpensesByCategory().forEach((category,amount) -> {
             writer.println(category + "," + amount);
         });
+    }
+
+    private BigDecimal getIncome(List<Transaction> transactions) {
+        BigDecimal income = transactions.stream()
+            .filter(tx -> tx.getType() == TransactionType.INCOME) //filter income transactions
+            .map(Transaction::getAmount) //convert transaction (object) --> amount (BigDecimal)
+            .reduce(BigDecimal.ZERO, BigDecimal::add); //sum all
+        return income;
+    }
+
+    private BigDecimal getExpense(List<Transaction> transactions) {
+        BigDecimal expense = transactions.stream()
+            .filter(tx -> tx.getType() == TransactionType.EXPENSE) //filter expense transactions
+            .map(Transaction::getAmount) //convert transaction (object) --> amount (BigDecimal)
+            .reduce(BigDecimal.ZERO, BigDecimal::add); //sum all
+        return expense;
+    }
+
+    private Map<String,BigDecimal> getExpensesByCategory(List<Transaction> transactions) {
+        Map<String, BigDecimal> expensesByCategory = transactions.stream()
+            .filter(tx -> tx.getType() == TransactionType.EXPENSE) //filter expense transactions
+            .collect(Collectors.groupingBy( //collect data to Map<String, BigDecimal> structure
+                tx -> tx.getCategory().getName(), //key (String) = category name
+                Collectors.reducing(BigDecimal.ZERO, Transaction::getAmount, BigDecimal::add) //value (BigDecimal) = sum all, which match category
+            ));
+        return expensesByCategory;
     }
 }

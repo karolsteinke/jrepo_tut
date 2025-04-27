@@ -4,13 +4,13 @@
         <title>Add new transaction</title>
     </head>
     <body>
-        <h1>Add new transaction</h1>
+        <h2>Add new transaction</h2>
         
         <!--html forms asking for user input for new transaction-->
         <!--using dto created in the GET method-->
         <!--field 'type' is hard-coded here, hidden from the user-->
         
-        <h2>Add income</h2>
+        <h3>Add income</h3>
         <form th:action="@{/transactions/save}" method="post" th:object="${transactionDto}">
             <input type="hidden" name="type" value="INCOME" />
             <select th:field="*{categoryId}">
@@ -24,7 +24,7 @@
             <div th:if="${#fields.hasErrors('date')}" th:errors="*{date}" class="error"></div>
         </form>
 
-        <h2>Add expense</h2>
+        <h3>Add expense</h3>
         <form th:action="@{/transactions/save}" method="post" th:object="${transactionDto}">
             <input type="hidden" name="type" value="EXPENSE" />
             <select th:field="*{categoryId}">

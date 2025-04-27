@@ -18,6 +18,9 @@
             </tr>
         </table>
 
-        <p><a th:href="@{/reports/monthly/csv(month=${report.month}, year=${report.year})}">Export to CSV</a></p>
+        <h3>Export to CSV</h3>
+        <p><a th:href="@{/reports/monthly/csv(month=${report.month}, year=${report.year})}">Click to download CSV</a></p>
+
+        <p><a th:href="@{/transactions}">← Back to list</a></p>
     </body>
 </html>

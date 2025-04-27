@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns="http://www.thymeleaf.org">
+    <head>
+        <title>Yearly Report</title>
+    </head>
+    <body>
+        <h2 th:text="'Yearly Report: ' + ${report.year}"></h2>
+        <p>Total income: <span th:text="${report.totalIncome}"></span></p>
+        <p>Total expense: <span th:text="${report.totalExpense}"></span></p>
+        <p>Balance: <span th:text="${report.balance}"></span></p>
+
+        <h3>Expenses by category</h3>
+        <table border="1">
+            <tr><th>Category</th><th>Amount</th></tr>
+            <tr th:each="entry : ${report.expensesByCategory}">
+                <td th:text="${entry.key}"></td>
+                <td th:text="${entry.value}"></td>
+            </tr>
+        </table>
+
+        <h3>Export to CSV</h3>
+        <p><a th:href="@{/reports/yearly/csv(year=${report.year})}">Click to download CSV</a></p>
+
+        <p><a th:href="@{/transactions}">← Back to list</a></p>
+    </body>
+</html>
