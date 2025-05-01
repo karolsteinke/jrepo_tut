@@ -1,6 +1,7 @@
 package sk.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,6 +28,7 @@ public class TransactionController {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    /*
     //def.: add all transactions to the model
     //def.: return 'list' view (showing all transactions)
     @GetMapping("/transactions") //ENDPOINT
@@ -34,6 +36,25 @@ public class TransactionController {
         List<Transaction> transactions = transactionService.getAll();
         model.addAttribute("transactions", transactions);
         return "transactions/list";
+    }
+    */
+
+    //def.: add *optionally filtered* transactions to the model
+    //def.: return 'list' view (showing all transactions)
+    @GetMapping("/transactions")
+    public String listTransactions(
+        @RequestParam(required = false) String type,
+        @RequestParam(required = false) Optional<Long> categoryId,
+        @RequestParam(required = false, defaultValue = "date") String sortBy,
+        @RequestParam(required = false, defaultValue = "desc") String order,
+        Model model
+    ) {
+        List<Transaction> transactions = transactionService.findAllWithFilters(type, categoryId, sortBy, order);
+
+        model.addAttribute("transactions", transactions);
+        model.addAttribute("categories", categoryRepository.findAll());
+        
+        return "/transactions/list";
     }
 
     //def.: add dto & categories to the model, to use in HTML form;

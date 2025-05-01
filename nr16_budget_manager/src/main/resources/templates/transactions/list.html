@@ -7,6 +7,7 @@
         <h1>Transactions List</h1>
 
         <!--table presenting all 'transactions' from the model-->
+        
         <table border="1">
             <thead>
                 <tr>
@@ -28,10 +29,46 @@
             </tbody>
         </table>
 
+        <br>
+        <br>
+        <br>
         <p><a th:href="@{/transactions/form}">Add new transaction</a></p>
 
+        <!--filtering and sorting form-->
+
+        <h3>Apply filtering / sorting</h3>
+        <form th:action="@{/transactions}" method="get">
+            <label>Type:</label>
+            <select name="type">
+                <option value="">All</option>
+                <option value="INCOME">Income</option>
+                <option value="EXPENSE">Expense</option>
+            </select>
+
+            <label>Category:</label>
+            <select name="categoryId">
+                <option value="">All</option>
+                <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}"></option>
+            </select>
+
+            <label>Sort by:</label>
+            <select name="sortBy">
+                <option value="date">Date</option>
+                <option value="amount">Amount</option>
+                <option value="category">Category</option>
+                <option value="type">Type</option>
+            </select>
+
+            <label>Order:</label>
+            <select name="order">
+                <option value="asc">Ascending</option>
+                <option value="desc" selected>Descending</option>
+            </select>
+
+            <button type="submit">Apply</button>
+        </form>
+
         <h3>Generate Report</h3>
-        
         <p><form th:action="@{reports/monthly}" method="get">
             <label for="month">Month (1-12):</label>
             <input type="number" id="month" name="month" min="1" max="12" required/>
@@ -48,5 +85,6 @@
 
             <button type="submit">Generate Yearly Report</button>
         </form></p>
+
     </body>
 </html>
