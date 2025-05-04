@@ -18,9 +18,7 @@ public class Genre {
     @Column(nullable = false, unique = true) //@Column = specifying column restrictions
     private String name;
 
-    //@ManyToMany needs a join table to understand entities relation
-    //mappedBy = "genres" means that join table is mapped by the other side (->Book class)
-    @ManyToMany(mappedBy = "genres")
+    @ManyToMany(mappedBy = "genres") //@ManyToMany *needs* a join table; "mappedBy" means that join table is mapped elsewhere (-> Book class)
     private Set<Book> books;
 
     //contructors

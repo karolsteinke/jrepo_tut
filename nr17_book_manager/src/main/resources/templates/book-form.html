@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns="http://www.thymeleaf.org">
+    <head>
+        <title>Adding book form</title>
+    </head>
+    <body>
+        
+        <!--html form asking for user input; using dto created in the GET method-->
+        <h2>Add new book</h2>
+        
+        <form th:action="@{/book-form/save}" method="post" th:object="${bookDto}">
+            <label>Title</label>
+            <input type="text" th:field="*{title}" required/>
+            <label>Author</label>
+            <input type="text" th:field="*{author}" required/>
+            <label>Publication Year</label>
+            <input type="number" step="1" th:field="*{publicationYear}" placeholder="(optional)"/>
+            <label>Genres</label>
+            <select th:field="*{genres}"> <!--todo: how to handle multi-select for genres here?-->
+                <option th:each="g : ${allGenres}" th:value="${g.id}" th:text="${g.name}"></option>
+            </select>
+            <button type="submit">Add book</button>
+            <div th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="error"></div>
+            <div th:if="${#fields.hasErrors('author')}" th:errors="*{author}" class="error"></div>
+        </form>
+
+        <p><a th:href="@{/book-list}">← Back to list</a></p>
+
+    </body>
+</html>

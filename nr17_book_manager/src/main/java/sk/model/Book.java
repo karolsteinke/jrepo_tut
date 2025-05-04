@@ -25,13 +25,11 @@ public class Book {
 
     private int publicationYear;
 
-    //@ManyToMany needs a join table to understand entities relation
-    //@JoinTable creates a join table, to connect book to genre
-    @ManyToMany
+    @ManyToMany //@ManyToMany *needs* a join table; @JoinTable creates it
     @JoinTable(
         name = "book_genre", //join table name
-        joinColumns = @JoinColumn(name = "book_id"), //key to book entity
-        inverseJoinColumns = @JoinColumn(name = "genre_id") //key to genre entity
+        joinColumns = @JoinColumn(name = "book_id"), //key to 'book' entity
+        inverseJoinColumns = @JoinColumn(name = "genre_id") //key to 'genre' entity
     )
     private Set<Genre> genres;
 

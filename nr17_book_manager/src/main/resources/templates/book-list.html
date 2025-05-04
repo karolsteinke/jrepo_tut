@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns="http://www.thymeleaf.org">
+    <head>
+        <title>Books Manager</title>
+    </head>
+    <body>
+
+        <!--table presenting all 'books' from the model-->
+        <h1>Books List</h1>
+
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Publication</th>
+                    <th>Genre</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="b: ${books}">
+                    <td th:text="${b.title}">title</td>
+                    <td th:text="${b.author}">author</td>
+                    <td th:text="${b.publicationYear}">publicationYear</td>
+                    <td th:text="${b.genres}">genres</td> <!--todo: how to handle set here?-->
+                </tr>
+            </tbody>
+        </table>
+
+        <br>
+        <br>
+        <br>
+        <p><a th:href="@{/book-form}">Add new book</a></p>
+
+    </body>
+</html>
