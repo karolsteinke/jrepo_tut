@@ -3,7 +3,7 @@ package sk.dto;
 import java.util.Set;
 
 import jakarta.validation.constraints.NotNull;
-import sk.model.Genre;
+import jakarta.validation.constraints.Positive;
 
 public class BookDto {
     
@@ -13,12 +13,13 @@ public class BookDto {
     @NotNull(message = "Author is required")
     private String author;
 
+    @Positive(message = "Year must be positive")
     private int publicationYear;
 
-    private Set<Genre> genres;
+    private Set<Long> genreIds; //why Long? HTTP can only send back simple data, but not whole Genre class
 
     //constructors
-    public BookDto() {} //Spring uses parameterless constructor in POST to create Dto (hidden)
+    public BookDto() {} //Spring implicitly uses parameterless constructor in POST to create Dto
 
     //getters & setters
     public String getTitle() {
@@ -45,11 +46,11 @@ public class BookDto {
         this.publicationYear = publicationYear;
     }
 
-    public Set<Genre> getGenres() {
-        return genres;
+    public Set<Long> getGenreIds() {
+        return genreIds;
     }
 
-    public void setGenres(Set<Genre> genres) {
-        this.genres = genres;
+    public void setGenreIds(Set<Long> genreIds) {
+        this.genreIds = genreIds;
     }
 }

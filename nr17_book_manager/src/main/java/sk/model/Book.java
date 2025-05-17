@@ -1,5 +1,6 @@
 package sk.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -8,8 +9,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Transient;
 
+import java.util.ArrayList;
 import java.util.Set;
+import java.util.List;
 
 @Entity
 public class Book {
@@ -20,7 +26,7 @@ public class Book {
     @Column(nullable = false) //@Column = specifying column restrictions
     private String title;
 
-    @Column(nullable = false) //@Column = specifying column restrictions
+    @Column(nullable = false)
     private String author;
 
     private int publicationYear;
@@ -33,7 +39,11 @@ public class Book {
     )
     private Set<Genre> genres;
 
-    // Optionally: @ManyToOne private User addedBy;
+    @ManyToOne
+    private User addedBy;
+
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL) //"mappedBy" means that relation is mapped elsewhere (-> Rating class); "cascade" means that deleting a book = deleting related ratings
+    private List<Rating> ratings = new ArrayList<>(); //FetchType.LAZY (default) will cause problem. So, force ratings *to load* with query in bookRepository.
 
     //constructors
     public Book() {};
@@ -43,6 +53,24 @@ public class Book {
         this.author = author;
         this.publicationYear = publicationYear;
         this.genres = genres;
+    }
+
+    //methods
+    //Return average for all related ratings
+    @Transient //@Transient = don't map, because field is dynamically calculated; optional here, because 'averageRating' doesn't exist anyway
+    public double getAverageRating() {
+        try {
+            if (ratings == null || ratings.isEmpty()) {
+                return 0.0;
+            }
+            return ratings.stream()
+                .mapToInt(Rating::getRatingValue)
+                .average()
+                .orElse(0.0)
+            ;
+        } catch (org.hibernate.LazyInitializationException e) { //in case of yet not initialized ratings list (lazy)
+            return 0.0;
+        }
     }
 
     //getters & setters
@@ -84,5 +112,21 @@ public class Book {
 
     public void setGenres(Set<Genre> genres) {
         this.genres = genres;
+    }
+
+    public List<Rating> getRatings() {
+        return ratings;
+    }
+
+    public void setRatings(List<Rating> ratings) {
+        this.ratings = ratings;
+    }
+
+    public User getAddedBy() {
+        return addedBy;
+    }
+
+    public void setAddedBy(User addedBy) {
+        this.addedBy = addedBy;
     }    
 }
