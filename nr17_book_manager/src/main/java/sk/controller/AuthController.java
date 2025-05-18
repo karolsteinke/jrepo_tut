@@ -32,13 +32,6 @@ public class AuthController {
     public String registerUser(@ModelAttribute User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
-        return "redirect:/register"; //TODO set back to "redirect:/login"
-    }
-
-    //TODO remove this test
-    @GetMapping("/login")
-    public String login() {
-        System.out.println(">> GET /login reached");
-        return "login";
+        return "redirect:/login";
     }
 }

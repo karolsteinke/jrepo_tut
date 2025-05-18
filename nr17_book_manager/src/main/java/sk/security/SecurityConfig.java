@@ -7,6 +7,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
 //import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
@@ -19,7 +22,7 @@ public class SecurityConfig {
         http
             //1. Access rules
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/register", "/css/**").permitAll() //open for everyone
+                .requestMatchers("/login", "/register", "/css/**", "/js/**", "/img/**").permitAll() //open for everyone
                 .anyRequest().authenticated() //only authenticated users
             )
             //2. Login configuration
@@ -42,4 +45,15 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    //Create Spring MVC Configurer to show 'login' view, without controller
+    @Bean
+    public WebMvcConfigurer forwardToLogin() {
+        return new WebMvcConfigurer() { //anonymous class implementing interface 'WebMvcConfigurer'
+            @Override
+            public void addViewControllers(ViewControllerRegistry registry) {
+                registry.addViewController("/login").setViewName("login");
+            }
+        };
+    }    
 }
