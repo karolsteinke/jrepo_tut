@@ -19,7 +19,7 @@ public class CustomUserDetailsService implements UserDetailsService{
         this.userRepo = userRepo;
     }
 
-    //Return user data (name & password); Spring calls it when "/login" POST request is sent
+    //Return user data (name & password); Spring calls it when "/login" POST request happens
     @Override
     public UserDetails loadUserByUsername(String username) {
         User user = userRepo.findByUsername(username)

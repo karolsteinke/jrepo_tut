@@ -21,14 +21,16 @@ public class Genre {
     @ManyToMany(mappedBy = "genres") //@ManyToMany *needs* a join table; "mappedBy" means that relation is mapped elsewhere (-> Book class)
     private Set<Book> books;
 
-    //contructors
+    //*** contructors ***
+    
     public Genre() {}
 
     public Genre(String name) {
         this.name = name;
     }
 
-    //getters & setters
+    //*** getters & setters ***
+
     public Long getId() {
         return id;
     }

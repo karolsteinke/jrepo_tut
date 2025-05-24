@@ -34,8 +34,18 @@ public class BookService {
     }
 
     //Return all books from the db
-    public List<Book> getAllBooks() {
-        return bookRepository.findAllWithRatings();
+    public List<Book> getAllBooks(String username) {
+        List<Book> books = bookRepository.findAllWithRatings();
+
+        //Set book's user rating to *currently logged* user
+        for (Book b : books) {
+            b.getRatings().stream()
+                .filter(r -> r.getUser().getUsername().equals(username))
+                .findFirst() //returns Optional<T>
+                .ifPresent(r -> b.setUserRating(r.getRatingValue()));
+        }
+        
+        return books;
     }
 
     //Return all genres from the db, converted to Dtos
@@ -63,21 +73,22 @@ public class BookService {
     }
 
     //Create new rating, set its relation to the book, and save it to the db
-    public void addRating(Long bookId, int ratingValue) {
-        Book book = bookRepository
-            .findById(bookId)
+    public void addRating(Long bookId, int ratingValue, String username) {
+        User user = userRepository.findByUsername(username)
+            .orElseThrow( () -> new RuntimeException("User not found"))
+        ;
+        Book book = bookRepository.findById(bookId)
             .orElseThrow( () -> new RuntimeException("Book not found"))
         ;
+        
+        //Check if not already rated by logged user
+        boolean alreadyRated = ratingRepository.findByUserAndBook(user, book).isPresent();
+        if (alreadyRated) return;
         
         Rating rating = new Rating();
         rating.setBook(book);
         rating.setRatingValue(ratingValue);
-
-        //Set Rating.user (by checking logged user)
-        String username = SecurityContextHolder.getContext().getAuthentication().getName(); //get logged user from the context
-        User user = userRepository.findByUsername(username).orElseThrow();
         rating.setUser(user);
-
         ratingRepository.save(rating);
     }
 }

@@ -43,9 +43,13 @@ public class Book {
     private User addedBy;
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL) //"mappedBy" means that relation is mapped elsewhere (-> Rating class); "cascade" means that deleting a book = deleting related ratings
-    private List<Rating> ratings = new ArrayList<>(); //FetchType.LAZY (default) will cause problem. So, force ratings *to load* with query in bookRepository.
+    private List<Rating> ratings = new ArrayList<>(); //FetchType.LAZY (default) will cause problem (not existing ratings at the start). So, force ratings *to load* with query in bookRepository.
 
-    //constructors
+    @Transient
+    private Integer userRating; //*currently logged* user rating; BookService always sets it by checking the db
+
+    //*** constructors ***
+
     public Book() {};
 
     public Book(String title, String author, int publicationYear, Set<Genre> genres) {
@@ -55,7 +59,8 @@ public class Book {
         this.genres = genres;
     }
 
-    //methods
+    //*** methods ***
+    
     //Return average for all related ratings
     @Transient //@Transient = don't map, because field is dynamically calculated; optional here, because 'averageRating' doesn't exist anyway
     public double getAverageRating() {
@@ -73,7 +78,8 @@ public class Book {
         }
     }
 
-    //getters & setters
+    //*** getters & setters ***
+
     public Long getId() {
         return id;
     }
@@ -128,5 +134,13 @@ public class Book {
 
     public void setAddedBy(User addedBy) {
         this.addedBy = addedBy;
+    }
+
+    public Integer getUserRating() {
+        return userRating;
+    }
+
+    public void setUserRating(Integer userRating) {
+        this.userRating = userRating;
     }    
 }

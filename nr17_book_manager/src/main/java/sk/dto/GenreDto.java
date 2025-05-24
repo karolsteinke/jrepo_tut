@@ -4,7 +4,8 @@ public class GenreDto {
     private Long id;
     private String name;
 
-    //constructors
+    //*** constructors ***
+    
     public GenreDto() {}
 
     public GenreDto(Long id, String name) {
@@ -12,7 +13,8 @@ public class GenreDto {
         this.name = name;
     }
 
-    //getters & setters
+    //*** getters & setters ***
+
     public Long getId() {
         return id;
     }

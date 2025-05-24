@@ -1,5 +1,6 @@
 package sk.controller;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -28,8 +29,8 @@ public class BookController {
 
     //Add all books to the model; Return 'list' view, showing all books
     @GetMapping("/book-list")
-    public String listBooks(Model model) {
-        List<Book> books = bookService.getAllBooks();
+    public String listBooks(Model model, Principal principal) {
+        List<Book> books = bookService.getAllBooks(principal.getName()); //principal = logged user
         model.addAttribute("books", books);
         return "book-list";
     }
@@ -57,8 +58,8 @@ public class BookController {
 
     //Add a rating of "value" to book with "id"; Redirect to new 'list' view
     @PostMapping("/book/{id}/rate")
-    public String rateBook(@PathVariable Long id, @RequestParam int ratingValue) {
-        bookService.addRating(id, ratingValue);
+    public String rateBook(@PathVariable Long id, @RequestParam int ratingValue, Principal principal) {
+        bookService.addRating(id, ratingValue, principal.getName()); //principal = logged user
         return "redirect:/book-list";
     }
 }

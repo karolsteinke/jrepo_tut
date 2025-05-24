@@ -21,10 +21,12 @@ public class Rating {
     @ManyToOne
     private User user;
 
-    //constructors
+    //*** constructors ***
+    
     public Rating() {};
 
-    //getters & setters
+    //*** getters & setters ***
+
     public Long getId() {
         return id;
     }

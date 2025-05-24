@@ -22,7 +22,7 @@ public class SecurityConfig {
         http
             //1. Access rules
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/register", "/css/**", "/js/**", "/img/**").permitAll() //open for everyone
+                .requestMatchers("/login", "/logout", "/register", "/css/**").permitAll() //open for everyone
                 .anyRequest().authenticated() //only authenticated users
             )
             //2. Login configuration
@@ -40,13 +40,13 @@ public class SecurityConfig {
         return http.build();
     }
 
-    //Create password encoder
+    //Create password encoder (used for registration and login)
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    //Create Spring MVC Configurer to show 'login' view, without controller
+    //Create Spring MVC Configurer to set 'login' view without controller
     @Bean
     public WebMvcConfigurer forwardToLogin() {
         return new WebMvcConfigurer() { //anonymous class implementing interface 'WebMvcConfigurer'

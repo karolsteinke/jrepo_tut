@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
     <head>
         <title>Books Manager</title>
     </head>
@@ -13,7 +13,7 @@
                 <tr>
                     <th>Title</th>
                     <th>Author</th>
-                    <th>Publication</th>
+                    <th>Year</th>
                     <th>Genre</th>
                     <th>Added by</th>
                     <th>Rating</th>
@@ -21,20 +21,24 @@
             </thead>
             <tbody>
                 <tr th:each="b: ${books}">
-                    <td th:text="${b.title}">title</td>
-                    <td th:text="${b.author}">author</td>
-                    <td th:text="${b.publicationYear}">publicationYear</td>
+                    <td th:text="${b.title}">[title]</td>
+                    <td th:text="${b.author}">[author]</td>
+                    <td th:text="${b.publicationYear}">[publicationYear]</td>
+                    <td><div th:each="g : ${b.genres}" th:text="${g.name}"></div></td>
+                    <td th:text="${b.addedBy.username}">[addedBy]</td>
                     <td>
-                        <div th:each="g : ${b.genres}" th:text="${g.name}"></div>
-                    </td>
-                    <td th:text="${b.addedBy.username}">addedBy</td>
-                    <td>
-                        <form th:action="@{/book/{id}/rate(id=${b.id})}" method="post">
+                        <!--(alternative) show logged user rating-->
+                        <span th:if="${b.userRating != null}" style="color: green;">
+                            Your rating: <span th:text="${b.userRating}"></span>
+                        </span>
+                        <!--(alternative) show form to rate book-->
+                        <form th:if="${b.userRating == null}" th:action="@{/book/{id}/rate(id=${b.id})}" method="post">
                             <select name="ratingValue">
                                 <option th:each="i : ${#numbers.sequence(1,5)}" th:value="${i}" th:text="${i}"></option> <!--create a select with values 1-5-->
                             </select>
                             <button type="submit">Rate</button>
                         </form>
+                        <!--show average rating-->
                         <p>Average rating: <span th:text="${#numbers.formatDecimal(b.averageRating, 1, 1)}"></span></p> <!--field averageRating doesn't exist but thymeleaf calls Book.getAverageRating() & knows the value-->
                     </td>
                 </tr>
@@ -42,6 +46,17 @@
         </table>
 
         <p><a th:href="@{/book-form}">Add new book</a></p>
+
+        <!--logged user and logout link-->
+        <hr>
+        <div style="text-align: center; margin-top: 1em;">
+            <span>
+                Logged in as: <strong sec:authentication="name">[username]</strong>
+            </span>
+            <form th:action="@{/logout}" method="post" style="display: inline;">
+                <button type="submit">Logout</button>
+            </form>
+        </div>
 
     </body>
 </html>

@@ -18,10 +18,12 @@ public class BookDto {
 
     private Set<Long> genreIds; //why Long? HTTP can only send back simple data, but not whole Genre class
 
-    //constructors
+    //*** constructors ***
+
     public BookDto() {} //Spring implicitly uses parameterless constructor in POST to create Dto
 
-    //getters & setters
+    //*** getters & setters ***
+    
     public String getTitle() {
         return title;
     }

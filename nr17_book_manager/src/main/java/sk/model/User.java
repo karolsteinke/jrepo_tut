@@ -8,7 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name="app_user") //@Table = change table's name. Can't use 'user' here, because it's sql restricted
+@Table(name="app_user") //@Table = set table's name. Can't use 'user' (default) here, because it's sql restricted
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,12 +20,12 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    //optional: books and ratings *list* added by user
+    //*** constructor ***
 
-    //constructor
     public User() {};
 
-    //getters & setters
+    //*** getters & setters ***
+    
     public Long getId() {
         return id;
     }
