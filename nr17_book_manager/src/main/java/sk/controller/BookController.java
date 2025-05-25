@@ -2,6 +2,7 @@ package sk.controller;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,8 +30,16 @@ public class BookController {
 
     //Add all books to the model; Return 'list' view, showing all books
     @GetMapping("/book-list")
-    public String listBooks(Model model, Principal principal) {
-        List<Book> books = bookService.getAllBooks(principal.getName()); //principal = logged user
+    public String listBooks(
+        @RequestParam(required = false) Optional<Long> genreId,
+        @RequestParam(required = false, defaultValue = "title") String sortBy,
+        @RequestParam(required = false, defaultValue = "desc") String order,
+        Model model, 
+        Principal principal
+    ) {
+        List<Book> books = bookService.getAllBooksWithFilters(principal.getName(), genreId, sortBy, order); //principal = logged user
+        
+        //List<Book> books = bookService.getAllBooks(principal.getName()); //principal = logged user
         model.addAttribute("books", books);
         return "book-list";
     }
@@ -47,12 +56,20 @@ public class BookController {
     @PostMapping("/book-form/save")
     public String saveBook(@ModelAttribute @Valid BookDto bookDto, BindingResult result, Model model) { //BindingResult is for errors
         
+        //1. Check for Dto validation erros
         if (result.hasErrors()) {
             model.addAttribute("allGenres", bookService.getAllGenres()); //add all attiubutes which book-form uses again
             return "book-form"; //render view again (now showing errors)
         }
 
-        bookService.saveBook(bookDto);
+        //2. Try to save the book, check if success or error
+        boolean success = bookService.saveBook(bookDto);
+        if (!success) {
+            model.addAttribute("allGenres", bookService.getAllGenres());
+            model.addAttribute("duplicateError", "This book already exists.");
+            return "book-form"; //render view again (now showing errors)
+        }
+
         return "redirect:/book-form";
     }
 

@@ -29,6 +29,8 @@
             <div th:if="${#fields.hasErrors('publicationYear')}" th:errors="*{publicationYear}" class="error"></div>
         </form>
 
+        <p th:if="${duplicateError}" th:text="${duplicateError}" style="color: red;"></p>
+
         <p><a th:href="@{/book-list}">← Back to list</a></p>
 
     </body>

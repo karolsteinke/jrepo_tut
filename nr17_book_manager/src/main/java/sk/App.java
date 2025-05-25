@@ -11,6 +11,5 @@ public class App {
 	}
 }
 
-//TODO Not allow any wrong books (input validation, the same title...)
 //TODO books filtering
 //TODO tests

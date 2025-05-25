@@ -2,6 +2,7 @@ package sk.service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -48,6 +49,11 @@ public class BookService {
         return books;
     }
 
+    //Return filtered and sorted books from the db
+    public List<Book> getAllBooksWithFilters(String username, Optional<Long> genreId, String sortBy, String order) {
+        //TODO complete
+    }
+
     //Return all genres from the db, converted to Dtos
     public List<GenreDto> getAllGenres() {
         return genreRepository.findAll().stream()
@@ -56,7 +62,11 @@ public class BookService {
     }
 
     //Convert Dto->Book & save entity to the db
-    public void saveBook(BookDto dto) {
+    public boolean saveBook(BookDto dto) {
+        //Check if not already exists
+        boolean alreadyExists = bookRepository.findByTitleAndAuthorAndPublicationYear(dto.getTitle(), dto.getAuthor(), dto.getPublicationYear()).isPresent();
+        if (alreadyExists) return false;
+        
         Book book = new Book();
         List<Genre> genres = genreRepository.findAllById(dto.getGenreIds());
         book.setTitle(dto.getTitle());
@@ -70,6 +80,7 @@ public class BookService {
         book.setAddedBy(user);
         
         bookRepository.save(book);
+        return true;
     }
 
     //Create new rating, set its relation to the book, and save it to the db

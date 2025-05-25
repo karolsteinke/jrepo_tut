@@ -1,5 +1,7 @@
 package sk.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -16,4 +18,6 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     //Return list of all books *loaded with ratings*
     @Query("SELECT b FROM Book b LEFT JOIN FETCH b.ratings") //select all book and ratings (force ratings *to load*)
     List<Book> findAllWithRatings();
+
+    Optional<Book> findByTitleAndAuthorAndPublicationYear(String title, String author, Integer publicationYear);
 }
