@@ -47,6 +47,26 @@
 
         <p><a th:href="@{/book-form}">Add new book</a></p>
 
+        <!--filtering and sorting form-->
+        <h3>Apply filtering / sorting</h3>
+
+        <form method="get" th:action="@{/book/list}">
+            <input type="text" name="author" placeholder="Author..." th:value="${param.author}" />
+
+            <fieldset>
+                <legend>Select genres</legend>
+                <div th:each="g : ${allGenres}">
+                    <label>
+                        <input type="checkbox" name="genreIds" th:value="${g.id}" 
+                            th:checked="${param.genreIds != null and param.genreIds.contains(g.id)}" />
+                        <span th:text="${g.name}">Genre</span>
+                    </label><br/>
+                </div>
+            </fieldset>
+
+            <button type="submit">Filter</button>
+        </form>
+
         <!--logged user and logout link-->
         <hr>
         <div style="text-align: center; margin-top: 1em;">

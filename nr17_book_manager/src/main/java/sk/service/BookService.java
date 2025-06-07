@@ -2,7 +2,7 @@ package sk.service;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -34,11 +34,29 @@ public class BookService {
         this.userRepository = userRepository;
     }
 
-    //Return all books from the db
-    public List<Book> getAllBooks(String username) {
+    //Return filtered and sorted books from the db
+    public List<Book> getAllBooksWithFilters(String username, String author, List<Long> genreIds, String sortBy, String order) {
         List<Book> books = bookRepository.findAllWithRatings();
 
-        //Set book's user rating to *currently logged* user
+        //Filter matching author, if present
+        if (author != null && !author.isBlank()) {
+            books = books.stream()
+                .filter(b -> b.getAuthor().equalsIgnoreCase(author))
+                .collect(Collectors.toList());
+        }
+
+        //Filter matching genre, if present
+        if (genreIds != null && !genreIds.isEmpty()) {
+            books = books.stream()
+                .filter(b -> b.getGenres().stream()
+                    .map(Genre::getId)
+                    .anyMatch(genreIds::contains))
+                .collect(Collectors.toList());
+        }
+
+        //Sorting = to do...
+
+        //Set books userRating to *currently logged* user
         for (Book b : books) {
             b.getRatings().stream()
                 .filter(r -> r.getUser().getUsername().equals(username))
@@ -49,10 +67,20 @@ public class BookService {
         return books;
     }
 
-    //Return filtered and sorted books from the db
-    public List<Book> getAllBooksWithFilters(String username, Optional<Long> genreId, String sortBy, String order) {
-        //TODO complete
-    }
+    //Return all books from the db; for each book set 'userRating' to value matching logged user
+    // public List<Book> getAllBooks(String username) {
+    //     List<Book> books = bookRepository.findAllWithRatings();
+
+    //     //Set book's user rating to *currently logged* user
+    //     for (Book b : books) {
+    //         b.getRatings().stream()
+    //             .filter(r -> r.getUser().getUsername().equals(username))
+    //             .findFirst() //returns Optional<T>
+    //             .ifPresent(r -> b.setUserRating(r.getRatingValue()));
+    //     }
+        
+    //     return books;
+    // }
 
     //Return all genres from the db, converted to Dtos
     public List<GenreDto> getAllGenres() {

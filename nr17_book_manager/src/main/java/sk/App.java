@@ -13,3 +13,4 @@ public class App {
 
 //TODO books filtering
 //TODO tests
+//TODO research: when we avoid sending whole class and send dto instead? how about sending list of objects (refer to problem in this project)

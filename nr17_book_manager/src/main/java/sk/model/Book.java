@@ -45,7 +45,7 @@ public class Book {
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL) //"mappedBy" means that relation is mapped elsewhere (-> Rating class); "cascade" means that deleting a book = deleting related ratings
     private List<Rating> ratings = new ArrayList<>(); //FetchType.LAZY (default) will cause problem (not existing ratings at the start). So, force ratings *to load* with query in bookRepository.
 
-    @Transient
+    @Transient //@Transient = don't map, because field is dynamically calculated
     private Integer userRating; //*currently logged* user rating; BookService always sets it by checking the db
 
     //*** constructors ***

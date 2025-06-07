@@ -2,7 +2,6 @@ package sk.controller;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,16 +30,17 @@ public class BookController {
     //Add all books to the model; Return 'list' view, showing all books
     @GetMapping("/book-list")
     public String listBooks(
-        @RequestParam(required = false) Optional<Long> genreId,
+        @RequestParam(required = false) String author,
+        @RequestParam(required = false) List<Long> genreIds,
         @RequestParam(required = false, defaultValue = "title") String sortBy,
         @RequestParam(required = false, defaultValue = "desc") String order,
         Model model, 
         Principal principal
     ) {
-        List<Book> books = bookService.getAllBooksWithFilters(principal.getName(), genreId, sortBy, order); //principal = logged user
+        List<Book> books = bookService.getAllBooksWithFilters(principal.getName(), author, genreIds, sortBy, order); //principal = logged user
         
-        //List<Book> books = bookService.getAllBooks(principal.getName()); //principal = logged user
         model.addAttribute("books", books);
+        model.addAttribute("allGenres", bookService.getAllGenres());
         return "book-list";
     }
 
@@ -61,7 +61,6 @@ public class BookController {
             model.addAttribute("allGenres", bookService.getAllGenres()); //add all attiubutes which book-form uses again
             return "book-form"; //render view again (now showing errors)
         }
-
         //2. Try to save the book, check if success or error
         boolean success = bookService.saveBook(bookDto);
         if (!success) {
