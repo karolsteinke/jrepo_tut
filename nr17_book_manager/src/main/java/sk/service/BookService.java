@@ -2,6 +2,7 @@ package sk.service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -38,25 +39,28 @@ public class BookService {
     public List<Book> getAllBooksWithFilters(String username, String author, List<Long> genreIds, String sortBy, String order) {
         List<Book> books = bookRepository.findAllWithRatings();
 
-        //Filter matching author, if present
+        //Filter only matching selected author
         if (author != null && !author.isBlank()) {
             books = books.stream()
                 .filter(b -> b.getAuthor().equalsIgnoreCase(author))
                 .collect(Collectors.toList());
         }
 
-        //Filter matching genre, if present
+        //Filter only matching selected genres (AND)
         if (genreIds != null && !genreIds.isEmpty()) {
             books = books.stream()
-                .filter(b -> b.getGenres().stream()
-                    .map(Genre::getId)
-                    .anyMatch(genreIds::contains))
+                .filter(book -> {
+                    Set<Long> bookGenreIds = book.getGenres().stream()
+                        .map(Genre::getId)
+                        .collect(Collectors.toSet());
+                    return bookGenreIds.containsAll(genreIds);
+                })
                 .collect(Collectors.toList());
         }
 
         //Sorting = to do...
 
-        //Set books userRating to *currently logged* user
+        //Set books userRating to *currently logged* user's rating
         for (Book b : books) {
             b.getRatings().stream()
                 .filter(r -> r.getUser().getUsername().equals(username))
